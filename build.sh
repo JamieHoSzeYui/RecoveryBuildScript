@@ -31,17 +31,21 @@ fi
 
 if [[ ! -n $2 ]]; then
     echo "Please tell me what you wanna build !"
+    echo "================================================"
+    echo "=             Supported types are :            ="
+    echo "=          TWRP | SHRP | PBRP | OFox           ="
+    echo "================================================"  
     exit
 fi
 
 if [[ $2 == "TWRP" ]]; then
-    MANIFEST=git://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b twrp-9.0
+    MANIFEST="git://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git -b twrp-9.0"
 elif [[ $2 == "SHRP" ]]; then
-    MANIFEST=git://github.com/SKYHAWK-Recovery-Project/platform_manifest_twrp_omni.git -b android-9.0
+    MANIFEST="git://github.com/SKYHAWK-Recovery-Project/platform_manifest_twrp_omni.git -b android-9.0"
 elif [[ $2 == "PBRP" ]]; then
-    MANIFEST=git://github.com/PitchBlackRecoveryProject/manifest_pb.git -b android-9.0
+    MANIFEST="git://github.com/PitchBlackRecoveryProject/manifest_pb.git -b android-9.0"
 elif [[ $2 == "OFox" ]]; then
-    MANIFEST=git://gitlab.com/OrangeFox/Manifest.git -b fox_9.0
+    MANIFEST="git://gitlab.com/OrangeFox/Manifest.git -b fox_9.0"
 else
     echo "================================================"
     echo "= Unknown recovery type. Supported types are : ="
@@ -49,7 +53,8 @@ else
     echo "================================================"  
     exit
 fi
-
+echo "Cleaning up old files.."
+rm -rf $WORKDIR
 # Lit shit
 mkdir $WORKDIR
 cd $WORKDIR
@@ -66,7 +71,7 @@ clear
 mka $TARGET -j4
 
 if [[ $2 == "TWRP" ]]; then
-    FINAL=$(ls $OUTDIR | grep recovery)
+    FINAL=$(ls $OUTDIR | grep recovery.img)
 else
     FINAL=$(ls $OUTDIR | grep zip)
 fi
@@ -84,5 +89,5 @@ fi
 
 echo "=========================="
 echo "=     $2 Build done !    ="
-echo "=  Final image : $FINAL  ="
+echo "=  Final output : $FINAL  ="
 echo "=========================="
