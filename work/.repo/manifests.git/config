@@ -1,0 +1,13 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+[filter "lfs"]
+	smudge = git-lfs smudge --skip -- %f
+	process = git-lfs filter-process --skip
+[repo]
+	depth = 1
+[remote "origin"]
+	url = git://github.com/PitchBlackRecoveryProject/manifest_pb.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[manifest]
+	groups = all,-notdefault,-device,-darwin,-x86,-mips,platform-linux

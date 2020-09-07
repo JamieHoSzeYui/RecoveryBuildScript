@@ -1,0 +1,2 @@
+git clone https://github.com/ZIDAN44/device_xiaomi_sakura_twrp device/xiaomi/sakura
+git clone --depth=1 --single-branch https://github.com/ZIDAN44/kernel_xiaomi_msm8953_10 kernel/xiaomi/msm8953

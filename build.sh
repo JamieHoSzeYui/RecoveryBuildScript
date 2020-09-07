@@ -10,7 +10,7 @@ usage()
 }
 
 #Vars
-TYPE=recoveryimage
+TARGET=recoveryimage
 WORKDIR=work
 OUTDIR=$WORKDIR/out/target/product/$1
 DEVICE=$1
@@ -53,10 +53,46 @@ else
     echo "================================================"  
     exit
 fi
-echo "Cleaning up old files.."
-rm -rf $WORKDIR
+
+if [[ $3 == "-t" ]]; then
+    TARGET=$4
+elif [[ $3 == "-dc" ]]; then
+    echo "Not cleaing up !"
+    echo "DONTCLEAN" >> temp.txt
+elif [[ $3 == "-mc" ]]; then
+    echo "Making clean !"
+    echo "MAKECLEAN" >> temp.txt
+else
+    echo "" >> /dev/null
+fi
+
+if [[ $4 == "-t" ]]; then
+    TARGET=$5
+else
+    echo "" >> /dev/null
+fi
+
+if [[ $5 == "-dc" ]];then
+    echo "DONTCLEAN" >> temp.txt
+elif [[ $5 == "-mc" ]]; then
+    echo "MAKECLEAN" >> temp.txt
+else
+    echo "" >> /dev/null
+fi
+
+CLEAN=$(cat temp.txt)
+
+if [[ $CLEAN == "DONTCLEAN" ]]; then
+    echo "" >> /dev/null
+elif [[ $CLEAN == "MAKECLEAN" ]]; then
+    cd $WORKDIR && make clean && cd ../
+else 
+    echo "Cleaning up.. "
+    rm -rf $WORKDIR
+    mkdir $WORKDIR
+fi
+
 # Lit shit
-mkdir $WORKDIR
 cd $WORKDIR
 echo "Recovery : Sync Sources"
 repo init -u $MANIFEST --depth=1 --groups=all,-notdefault,-device,-darwin,-x86,-mips >> /dev/null
@@ -66,6 +102,7 @@ $KT >> /dev/null
 echo "Sync done."
 echo "Lunching.."
 . build/envsetup.sh >> /dev/null
+export ALLOW_MISSING_DEPENDENCIES=true
 lunch omni_$DEVICE-eng
 clear
 mka $TARGET -j4
